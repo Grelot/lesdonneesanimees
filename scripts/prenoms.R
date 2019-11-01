@@ -112,7 +112,7 @@ tops_format
        subtitle  =  "De 1900 à 2018",
        caption  = "")
 
-animate(anim, nframes=7200, detail=30, fps = 20,  width = 1200, height = 1000, 
-        renderer = gifski_renderer("gganim.gif"))
+animate(anim, nframes=1200, detail=15, fps = 20,  width = 1200, height = 1000, 
+        renderer = gifski_renderer("images/prenoms_filles.gif"))
 
 
