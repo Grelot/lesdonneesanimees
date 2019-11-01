@@ -23,7 +23,9 @@ apt-get install cargo
 
 * Fichier des Prénoms ([INSEE](https://www.insee.fr/fr/statistiques/2540004#consulter))
 
-## Works
+## Images
 
 ### Le top des prénoms de filles en France
+
+![Alt Text](https://github.com/Grelot/lesdonneesanimees/blob/master/images/prenoms_filles.gif)
 
