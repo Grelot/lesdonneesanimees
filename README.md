@@ -10,6 +10,9 @@ Scripts to animate data from INSEE
 
 apt-get install cargo
 
+ffmpeg for windows 10 : https://github.com/adaptlearning/adapt_authoring/wiki/Installing-FFmpeg
+
+
 ### R packages
 
 * gganimate

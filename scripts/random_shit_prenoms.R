@@ -144,7 +144,8 @@ tops_format
        subtitle  =  "De 1900 à 2018",
        caption  = "")
 
-animate(anim, 200, fps = 20,  width = 1200, height = 1000, 
-        renderer = gifski_renderer("gganim.gif"))
 
-
+  
+  animate(anim, nframes=3068, detail=4, fps = 20,  width = 1920, height = 1080, 
+          renderer = ffmpeg_renderer()) -> for_mp4
+  anim_save("animation.mp4", animation = for_mp4 )
