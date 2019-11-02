@@ -17,6 +17,7 @@ apt-get install cargo
 * gifski
 * tidyverse
 * janitor
+* png
 
 
 ## Data
