@@ -8,13 +8,13 @@ library(tidyverse)
 theme_set(theme_bw())
 ###############################################################################
 ## load data
-nat=read.csv("donnees/nat2018.csv",header=T,sep=";")
+nat=read.csv("donnees/nat2018_format.csv",header=T,sep=";")
 names(nat)=c("sex","preusuel","annais","nombre")
 ###############################################################################
 ## clean data
 nat[nat=="XXXX"] <- NA
 natcl=na.omit(nat)
-natcll=natcl[-c(which(natcl$preusuel == "_PRENOMS_RARES")),]
+natcll=natcl[-c(which(natcl$preusuel == "_prenoms_rares")),]
 
 ###############################################################################
 ## prepare data
@@ -57,7 +57,7 @@ for(i in 2:(dim(topNombre)[2]-1)) {
   	currentNombre=topNombre[j,i]
   	#print(pren)  	
     if(pren %in% topPreusuel[,i+1]) {
-      nextNombre=topNombre[which(pren == topPreusuel[,i+1]),i+1]
+      nextNombre=topNombre[which(pren == topPreusuel[,i+1]),i+1][1]
       #print(nextNombre)
       #print(currentNombre)
       fillSeqNombres[j,]=seq(currentNombre,nextNombre,length.out=12)
@@ -89,9 +89,9 @@ tops$nombre=as.numeric(tops$nombre)
 
 
 
-tops_format <- tops[1:132,] %>%
+tops_format <- tops %>%
   group_by(frame) %>%
-  mutate(rank = rank(-nombre),
+  mutate(rank = rank(-nombre,ties.method="random"),
          Value_rel = nombre/nombre[rank==1],
          Value_lbl = paste0(" ",nombre)) %>%
   group_by(prenom) %>% 
