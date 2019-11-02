@@ -9,7 +9,7 @@ theme_set(theme_bw())
 ###############################################################################
 ## load data
 nat=read.csv("donnees/nat2018.csv",header=T,sep=";")
-
+names(nat)=c("sex","preusuel","annais","nombre")
 ###############################################################################
 ## clean data
 nat[nat=="XXXX"] <- NA
