@@ -6,6 +6,10 @@ library(gifski)
 library(tidyverse)
 library(RColorBrewer)
 library(png)
+#install.packages('showtext', dependencies = TRUE)
+#library(showtext)
+
+
 theme_set(theme_bw())
 ###############################################################################
 ## load data
@@ -42,7 +46,7 @@ topNombre=topNombre[,-1]
 ###############################################################################
 ## format data for gganimation
 toplimit=12
-fillsize=12
+fillsize=45
 
 currentYear=1900
 currentframe=1
@@ -107,23 +111,24 @@ tops_format
 ###############################################################################
 ## visualization
 nb.cols <- length(unique(tops_format$prenom))
-mycolors <- colorRampPalette(brewer.pal(8, "Set2"))(nb.cols)
+baby_girl_palette_color=c("#D291BC","#FFDFD3","#FEC8D8","#957DAD","#E0BBE4","#F47C7C","#F7F48B","#A1DE93","#70A1D7")
+mycolors <- sample(colorRampPalette(baby_girl_palette_color)(nb.cols))
 
 
-staticplot = ggplot(tops_format, aes(rank, group = prenom, 
+staticplot = ggplot(tops_format[1:4860,], aes(-rank, group = prenom, 
                                      fill = as.factor(prenom), color = as.factor(prenom))) +
-  geom_tile(aes(y = nombre/2,
-                height = nombre,
-                width = 0.9), alpha = 0.8, color = NA) +
+  geom_tile(aes(y = nombre/2,height = nombre, width = 0.9), alpha = 0.8, color = NA) +
   geom_text(aes(y = nombre, label = paste(prenom, " ")),colour="gray10", hjust = 1,size=12) +
   geom_text(aes(y=nombre,label = Value_lbl, hjust=0), colour="gray10",size=12) +
+  geom_text(aes(x=-10,y=Inf,label = year, hjust=0.5,vjust=0.5), colour="gray50",fontface="bold",size=72) +
+  geom_text(aes(x=-11.5,y=Inf,label ="De 1900 à 2018", hjust=0.5,vjust=0.5), colour="gray50",size=18) +
+  
   coord_flip(clip = "off", expand = FALSE) +
-  scale_y_continuous(labels = scales::comma) +
-  scale_x_reverse() +
+  scale_x_continuous(labels = scales::comma,position="bottom") +
   scale_fill_manual(values=mycolors) +
   guides(color = FALSE, fill = FALSE) +
   theme(axis.line=element_blank(),
-        axis.text.x=element_text(size=24),
+        axis.text.x=element_blank(),
         axis.text.y=element_blank(),
         axis.ticks=element_blank(),
         axis.title.x=element_blank(),
@@ -134,24 +139,21 @@ staticplot = ggplot(tops_format, aes(rank, group = prenom,
         panel.grid.major=element_blank(),
         panel.grid.minor=element_blank(),
         panel.grid.major.x = element_line( size=.1, color="grey" ),
-        panel.grid.minor.x = element_line( size=.1, color="grey" ),
-        plot.title=element_text(size=25, hjust=0.5, face="bold", colour="grey", vjust=-1),
-        plot.subtitle=element_text(size=18, hjust=0.5, face="italic", color="grey"),
-        plot.caption =element_text(size=18, hjust=0.5, face="italic", color="grey"),
+        panel.grid.minor.x = element_blank(),
+        plot.title=element_text(size=25, hjust=0.5, face="bold", colour="grey50", vjust=-1),
+        plot.subtitle=element_text(size=18, hjust=0.5, face="italic", color="grey50"),
+        plot.caption =element_text(size=18, hjust=0.5, face="italic", color="grey50"),
         plot.background=element_blank(),
-        plot.margin = margin(2,6, 2, 4, "cm"))
+        plot.margin = margin(2,12, 2, 4, "cm"))
 
 staticplot
 
-  anim = staticplot + transition_time(frame) +
-  view_follow(fixed_x = TRUE)  +
-    ease_aes('cubic-in-out')+
-    enter_drift(x_mod = -1) + exit_drift(x_mod = 1)
+  anim = staticplot +transition_manual(frame) +
+    ease_aes('quadratic-in-out')+
+    view_follow(fixed_x = TRUE)
 
   
-  animate(anim, nframes=24000, detail=12, fps = 30,  width = 1920, height = 1080, duration=10,
-          end_pause=150, start_pause=20, 
-          renderer = ffmpeg_renderer()) -> for_mp4
-  anim_save("animation.mp4", animation = for_mp4 )
+  animate(anim, nframes=405, fps = 30,  width = 1920, height = 1080,renderer = ffmpeg_renderer()) -> for_mp4
+  anim_save("animation3.mp4", animation = for_mp4 )
 
   
