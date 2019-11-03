@@ -23,6 +23,8 @@ ffmpeg for windows 10 : https://github.com/adaptlearning/adapt_authoring/wiki/In
 * png
 * weanderson
 * library(RColorBrewer)
+*install.packages('showtext', dependencies = TRUE)
+library(showtext)
 
 ## Data
 
