@@ -4,7 +4,8 @@ library(ggplot2)
 library(gganimate)
 library(gifski)
 library(tidyverse)
-
+library(RColorBrewer)
+library(png)
 theme_set(theme_bw())
 ###############################################################################
 ## load data
@@ -40,18 +41,19 @@ topNombre=topNombre[,-1]
 
 ###############################################################################
 ## format data for gganimation
-
+toplimit=12
+fillsize=12
 
 currentYear=1900
 currentframe=1
-tops=data.frame(frame=rep(currentframe,10),prenom=topPreusuel[1:10,1],nombre=topNombre[1:10,1], year=rep(currentYear,10))
+tops=data.frame(frame=rep(currentframe,toplimit),prenom=topPreusuel[1:toplimit,1],nombre=topNombre[1:toplimit,1], year=rep(currentYear,toplimit))
 for(i in 2:(dim(topNombre)[2]-1)) {
   currentYear=currentYear+1
   currentframe=currentframe+1
-  currentTop=data.frame(frame=rep(currentframe,10),prenom=topPreusuel[1:10,i],nombre=topNombre[1:10,i], year=rep(currentYear,10))
+  currentTop=data.frame(frame=rep(currentframe,toplimit),prenom=topPreusuel[1:toplimit,i],nombre=topNombre[1:toplimit,i], year=rep(currentYear,toplimit))
   tops=rbind(tops,currentTop)
   ## fill tops
-  fillSeqNombres=matrix(rep(0,120),nrow=10,ncol=12)
+  fillSeqNombres=matrix(rep(0,toplimit*fillsize),nrow=toplimit,ncol=fillsize)
   j=1
   for(pren in currentTop$prenom) {
   	currentNombre=topNombre[j,i]
@@ -60,24 +62,24 @@ for(i in 2:(dim(topNombre)[2]-1)) {
       nextNombre=topNombre[which(pren == topPreusuel[,i+1]),i+1][1]
       #print(nextNombre)
       #print(currentNombre)
-      fillSeqNombres[j,]=seq(currentNombre,nextNombre,length.out=12)
+      fillSeqNombres[j,]=seq(currentNombre,nextNombre,length.out=fillsize)
     } else {
   	  print("ERRRRRRRRRRRRRR!!!!!!!!!!!!!")
   	  print(pren)
-  	  fillSeqNombres[j,]=rep(currentNombre,12)
+  	  fillSeqNombres[j,]=rep(currentNombre,fillsize)
     }
     j=j+1
   }
   print(currentYear)
-  for(k in 1:12) {
+  for(k in 1:fillsize) {
   	currentframe=currentframe+1
-  	fillTop=data.frame(frame=rep(currentframe,10),prenom=topPreusuel[1:10,i],nombre=fillSeqNombres[,k], year=rep(currentYear,10))
+  	fillTop=data.frame(frame=rep(currentframe,toplimit),prenom=topPreusuel[1:toplimit,i],nombre=fillSeqNombres[,k], year=rep(currentYear,toplimit))
   	tops=rbind(tops,fillTop)
   }
 }
-for(k in 1:12) {
+for(k in 1:fillsize) {
 	currentframe=currentframe+1
-	currentTop=data.frame(frame=rep(currentframe,10),prenom=topPreusuel[1:10,dim(topNombre)[2]],nombre=topNombre[1:10,dim(topNombre)[2]], year=rep(currentYear+1,10))
+	currentTop=data.frame(frame=rep(currentframe,toplimit),prenom=topPreusuel[1:toplimit,dim(topNombre)[2]],nombre=topNombre[1:toplimit,dim(topNombre)[2]], year=rep(currentYear+1,toplimit))
 	tops=rbind(tops, currentTop)
 }
 
@@ -95,7 +97,7 @@ tops_format <- tops %>%
          Value_rel = nombre/nombre[rank==1],
          Value_lbl = paste0(" ",nombre)) %>%
   group_by(prenom) %>% 
-  filter(rank <=10) %>%
+  filter(rank <=toplimit) %>%
   ungroup()
 
 
@@ -104,21 +106,24 @@ tops_format
 
 ###############################################################################
 ## visualization
+nb.cols <- length(unique(tops_format$prenom))
+mycolors <- colorRampPalette(brewer.pal(8, "Set2"))(nb.cols)
 
 
-  staticplot = ggplot(tops_format, aes(rank, frame= year, group = prenom, 
-                fill = as.factor(prenom), color = as.factor(prenom))) +
+staticplot = ggplot(tops_format, aes(rank, group = prenom, 
+                                     fill = as.factor(prenom), color = as.factor(prenom))) +
   geom_tile(aes(y = nombre/2,
                 height = nombre,
                 width = 0.9), alpha = 0.8, color = NA) +
-  geom_text(aes(y = 0, label = paste(prenom, " ")), vjust = 0.2, hjust = 1) +
-  geom_text(aes(y=nombre,label = Value_lbl, hjust=0)) +
+  geom_text(aes(y = nombre, label = paste(prenom, " ")),colour="gray10", hjust = 1,size=12) +
+  geom_text(aes(y=nombre,label = Value_lbl, hjust=0), colour="gray10",size=12) +
   coord_flip(clip = "off", expand = FALSE) +
   scale_y_continuous(labels = scales::comma) +
   scale_x_reverse() +
+  scale_fill_manual(values=mycolors) +
   guides(color = FALSE, fill = FALSE) +
   theme(axis.line=element_blank(),
-        axis.text.x=element_blank(),
+        axis.text.x=element_text(size=24),
         axis.text.y=element_blank(),
         axis.ticks=element_blank(),
         axis.title.x=element_blank(),
@@ -132,20 +137,21 @@ tops_format
         panel.grid.minor.x = element_line( size=.1, color="grey" ),
         plot.title=element_text(size=25, hjust=0.5, face="bold", colour="grey", vjust=-1),
         plot.subtitle=element_text(size=18, hjust=0.5, face="italic", color="grey"),
-        plot.caption =element_text(size=8, hjust=0.5, face="italic", color="grey"),
+        plot.caption =element_text(size=18, hjust=0.5, face="italic", color="grey"),
         plot.background=element_blank(),
-       plot.margin = margin(2,2, 2, 4, "cm"))
+        plot.margin = margin(2,6, 2, 4, "cm"))
 
+staticplot
 
-  anim = staticplot + transition_states(frame, transition_length = 4, state_length = 1) +
-   ease_aes('quadratic-in-out')+
+  anim = staticplot + transition_time(frame) +
   view_follow(fixed_x = TRUE)  +
-  labs(title = "Le top des prénoms de filles en France\n {closest_state}",  
-       subtitle  =  "De 1900 à 2018",
-       caption  = "")
-
+    ease_aes('cubic-in-out')+
+    enter_drift(x_mod = -1) + exit_drift(x_mod = 1)
 
   
-  animate(anim, nframes=3068, detail=4, fps = 20,  width = 1920, height = 1080, 
+  animate(anim, nframes=24000, detail=12, fps = 30,  width = 1920, height = 1080, duration=10,
+          end_pause=150, start_pause=20, 
           renderer = ffmpeg_renderer()) -> for_mp4
   anim_save("animation.mp4", animation = for_mp4 )
+
+  

@@ -21,7 +21,8 @@ ffmpeg for windows 10 : https://github.com/adaptlearning/adapt_authoring/wiki/In
 * tidyverse
 * janitor
 * png
-
+* weanderson
+* library(RColorBrewer)
 
 ## Data
 
