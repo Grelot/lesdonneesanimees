@@ -7,3 +7,10 @@ awk 'BEGIN{OFS=FS=";"}
           for(x in arr)
               sub(arr[x],toupper(substr(arr[x],1,1))substr(arr[x],2),$2)
          }1' nat2018_anglo.csv > nat2018_format.csv
+
+awk 'BEGIN{OFS=FS=";"}
+     NR>1{$2 = tolower($2);
+          split($2,arr," ");
+          for(x in arr)
+              sub(arr[x],toupper(substr(arr[x],1,1))substr(arr[x],2),$2)
+         }1' nat2018_low.csv > nat2018_format.csv
