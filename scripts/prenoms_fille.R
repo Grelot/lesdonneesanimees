@@ -166,3 +166,7 @@ staticplot
   anim_save("animation.mp4", animation = for_mp4 )
 
   
+animate(anim, nframes=200, fps = 40,  width = 1920, height = 1080, 
+        renderer = gifski_renderer("images/prenoms_filles.gif"))
+
+
