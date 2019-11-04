@@ -11,7 +11,10 @@ Scripts to animate data from INSEE
 apt-get install cargo
 
 ffmpeg for windows 10 : https://github.com/adaptlearning/adapt_authoring/wiki/Installing-FFmpeg
-
+linux :
+```
+sudo apt install ffmpeg
+```
 
 ### R packages
 
@@ -25,6 +28,7 @@ ffmpeg for windows 10 : https://github.com/adaptlearning/adapt_authoring/wiki/In
 * library(RColorBrewer)
 *install.packages('showtext', dependencies = TRUE)
 library(showtext)
+library(gridSVG)
 
 ## Data
 
