@@ -88,14 +88,9 @@ for(i in 2:(dim(topNombre)[2]-1)) {
 }
 for(k in 1:fillsize) {
 	currentframe=currentframe+1
-	currentTop=data.frame(frame=rep(currentframe,toplimit),prenom=topPreusuel[1:toplimit,dim(topNombre)[2]],nombre=topNombre[1:toplimit,dim(topNombre)[2]], year=rep(currentYear+1,toplimit))
+	currentTop=data.frame(frame=rep(currentframe,toplimit),prenom=fillTop$prenom,nombre=fillTop$nombre, year=fillTop$year)
 	tops=rbind(tops, currentTop)
 }
-for(k in 1:fillsize) {
-  currentframe=currentframe+1  
-  tops=rbind(tops, currentTop)
-}
-
 
 
 tops$nombre=as.integer(tops$nombre)
