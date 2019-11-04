@@ -8,13 +8,22 @@ Scripts to animate data from INSEE
 
 ### Sotfwares
 
-apt-get install cargo
+#### LINUX
 
-ffmpeg for windows 10 : https://github.com/adaptlearning/adapt_authoring/wiki/Installing-FFmpeg
-linux :
+* [CARGO](https://doc.rust-lang.org/cargo/index.html)
+```
+apt-get install cargo
+```
+* ffmpeg for ubuntu :
+
 ```
 sudo apt install ffmpeg
 ```
+
+#### WINDOWS 10
+
+* ffmpeg for windows 10 : https://github.com/adaptlearning/adapt_authoring/wiki/Installing-FFmpeg
+
 
 ### R packages
 
@@ -24,11 +33,13 @@ sudo apt install ffmpeg
 * tidyverse
 * janitor
 * png
-* weanderson
-* library(RColorBrewer)
-*install.packages('showtext', dependencies = TRUE)
-library(showtext)
-library(gridSVG)
+* RColorBrewer
+
+* weanderson _(optional)_
+* showtext with dependencies _(optional)_
+* gridSVG _(optional)_
+
+
 
 ## Data
 
