@@ -8,6 +8,9 @@ library(RColorBrewer)
 library(png)
 library(extrafont)
 
+library(ggimage)
+library(rsvg)
+
 ligue=read.csv("donnees/football_stats.csv",header=T,sep=";")
 
 
@@ -49,7 +52,7 @@ topNombre=topCumul
 
 toplimit=16
 #### number of frame for each year
-fillsize=80
+fillsize=160
 
 currentYear=1993
 currentframe=1
@@ -105,7 +108,7 @@ tops$nombre=as.numeric(tops$nombre)
 
 tops_format <- tops %>%
   group_by(frame) %>%
-  mutate(rank = rank(-nombre,ties.method="random"),
+  mutate(rank = rank(-nombre,ties.method="first"),
          Value_rel = nombre/nombre[rank==1],
          Value_lbl = paste0(" ",nombre)) %>%
   group_by(prenom) %>% 
@@ -127,22 +130,34 @@ ress=read.csv("ornament/club.csv",header=T,sep=",")
 
 
 nb.cols <- length(unique(tops_format$prenom))
-mycolors <- ress$colour
-names(mycolors) = ress$team
 
-staticplot = ggplot(tops_format, aes(-rank, group = prenom, 
-                                     fill = as.factor(prenom), color = as.factor(prenom))) +
+mycolors <- as.character(ress$colour)
+names(mycolors) = as.character(ress$team)
+
+myfontcolors <- as.character(ress$textcolour)
+names(myfontcolors) = as.character(ress$team)
+
+logos <- data.frame(logo=as.character(paste("ornament/fc",as.character(ress$logo),sep="/")),
+ prenom = as.character(ress$team))
+
+
+tops_format_pic=inner_join(tops_format,logos, by="prenom")
+
+
+
+
+
+staticplot = ggplot(tops_format_pic, aes(-rank, group = prenom, 
+                                     fill = as.factor(prenom)), colour = as.factor(prenom)) +
   geom_tile(aes(y = nombre/2,height = nombre, width = 0.9), alpha = 0.8, color = NA) +
-  geom_text(aes(y = nombre, label = paste(prenom, " "),colour=prenom), hjust = 1,size=12) +
-  scale_colour_manual(values=ress$textcolour )+
-  geom_text(aes(y=nombre,label = Value_lbl, hjust=0), colour="gray10",size=12) +
-  geom_text(aes(x=-11,y=Inf,label = "Nombre buts cumulés", hjust=0.5,vjust=0.5), colour="gray10",fontface="bold",size=24) +
-
-  geom_text(aes(x=-12,y=Inf,label = "par club en Ligue 1", hjust=0.5,vjust=0.5), colour="gray10",fontface="bold",size=24) +
-  
-  geom_text(aes(x=-15,y=Inf,label = year, hjust=0.5,vjust=0.5), colour="gray50",fontface="bold",size=72) +
+  geom_text(aes(y = -Inf, label = paste(prenom," ")), colour="gray10", hjust = 1,size=12) +
+  #scale_colour_manual(values=myfontcolors )+
+  geom_text(aes(y=nombre+0.04*nombre,label = Value_lbl, hjust=0), colour="gray10",size=12) +
+  geom_image(aes(x=-rank,y=nombre+0.02*nombre, image = logo), size=0.04)+
+  geom_text(aes(x=-12.5,y=Inf,label = "Buts marqués", hjust=0.5,vjust=0.5), colour="gray10",fontface="bold",size=18) +
+  geom_text(aes(x=-13.5,y=Inf,label = "en Ligue 1", hjust=0.5,vjust=0.5), colour="gray10",fontface="bold",size=18) +
+  geom_text(aes(x=-15,y=Inf,label = year, hjust=0.5,vjust=0.5), colour="gray50",fontface="bold",size=48) +
   geom_text(aes(x=-15.5,y=Inf,label ="", hjust=0.5,vjust=0.5), colour="gray50",size=18) +
-  
   coord_flip(clip = "off", expand = FALSE) +
   scale_x_continuous(labels = scales::comma,position="bottom") +
   scale_fill_manual(values=mycolors) +
@@ -164,7 +179,7 @@ staticplot = ggplot(tops_format, aes(-rank, group = prenom,
         plot.subtitle=element_text(size=18, hjust=0.5, face="italic", color="grey50"),
         plot.caption =element_text(size=18, hjust=0.5, face="italic", color="grey50"),
         plot.background=element_blank(),
-        plot.margin = margin(2,14, 2, 4, "cm"))
+        plot.margin = margin(2,7, 2, 7, "cm"))
 
 
 anim = staticplot +transition_manual(frame) +
@@ -172,8 +187,8 @@ anim = staticplot +transition_manual(frame) +
   view_follow(fixed_x = TRUE)
 
 
-nombre_frames=as.integer(dim(tops_format)[1]/12)
-animate(anim, nframes=100, fps = 40,  width = 1920, height = 1080,renderer = ffmpeg_renderer()) -> for_mp4
+nombre_frames=as.integer(dim(tops_format)[1]/toplimit)
+animate(anim, nframes=nombre_frames, fps = 40,  width = 1920, height = 1080,renderer = ffmpeg_renderer()) -> for_mp4
 anim_save("animation_foot_goals.mp4", animation = for_mp4 )
 
 
