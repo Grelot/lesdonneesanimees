@@ -1,0 +1,25 @@
+pays,year,nombre,poids,iso2
+Nigeria,2011,10,224,ng
+Nigeria,2016,41,769,ng
+Côte d’Ivoire,2011,6,126,ci
+Côte d’Ivoire,2016,14,595,ci
+Mozambique,2011,8,299,mz
+Mozambique,2016,5,306,mz
+Angola,2011,5,218,ao
+Angola,2016,7,285,ao
+Afrique du sud,2011,8,211,za
+Afrique du sud,2016,7,278,za
+Kenya,2011,6,129,ke
+Kenya,2016,5,336,ke
+Zimbabwe,2011,3,36,zw
+Zimbabwe,2016,20,404,zw
+Ethiopie,2011,4,84,et
+Ethiopie,2016,10,350,et
+Uganda,2011,3,171,ug
+Uganda,2016,5,160,ug
+Malawi,2011,2,54,mw
+Malawi,2016,4,130,mw
+Congo,2011,5,86,cd
+Congo,2016,3,90,cd
+Cameroun,2011,1,25,cm
+Cameroun,2016,2,45,cm
