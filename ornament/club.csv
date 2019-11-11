@@ -1,30 +1,44 @@
-team,logo,colour,textcolour
-Angers,angers-sco.svg,#faf8ef,gray10
-Auxerre,AJ_Auxerre.svg,#0A7CCB,gray10
-Bastia,SC_Bastia_2011.svg,#204792,white
-Bordeaux,fc-girondins-de-bordeaux.svg,#001b50,white
-Caen,stade-malherbe-caen.svg,#3b4560,white
-Cannes,AS_Cannes_foot_Logo_2009.svg,#f6f7f8,red
-Guingamp,en-avant-de-guingamp.svg,#d14a43,black
-Le Havre,Havre_AC_2012.svg,#8CC5E6,#002E59
-Lens,RC_Lens_2014.svg,#F5D406,#A91314
-Lille,LOSC_Lille_2018.svg,#E1180B,#1F1B6A
-Lorient,FC_Lorient_Bretagne-Sud.svg,#F58113,black
-Lyon,olympique-lyonnais.svg,#d49f45,black
-Marseille,Olympique_Marseille_logo.svg,#2271b3,white
-Martigues,FC_Martigues.svg,#fcbc17,gray10
-Metz,FC-Metz.svg,#6B0508,white
-Monaco,as-monaco-fc.svg,#d91920,white
-Montpellier,montpellier-hsc.svg,#ff6600,gray10
-Nancy,AS_Nancy-Lorraine.svg,#ff0000,white
-Nantes,fc-nantes.svg,#ffd600,gray10
-Nice,ogc-nice.svg,#d14a43,gray10
-Paris SG,paris-saint-germain-f-c.svg,#004170 ,white
-Rennes,stade-rennais-f-c.svg,#e13327,gray10
-Sedan,Sedan_Ardennes_2001.svg,#009949,#EE161F
-Sochaux,FC_Sochaux-Montbéliard.svg,#FBD419,#202552
-St Etienne,as-saint-étienne.svg,#006a32,white
-Strasbourg,racing-club-de-strasbourg-alsace.svg,#004996,white
-Toulouse,Toulouse_FC_2018.svg,#755991,white
-Troyes,ES_Troyes_AC.svg,#2c68aa,gray10
-Valenciennes,Logo_Valenciennes_FC.svg,#D91920,white
+team,svg,colour,textcolour,logo
+Angers,angers-sco.svg,#faf8ef,gray10,angers.png
+Auxerre,AJ_Auxerre.svg,#0A7CCB,gray10,auxerre.png
+Bastia,SC_Bastia_2011.svg,#204792,gray90,bastia.png
+Bordeaux,fc-girondins-de-bordeaux.svg,#001b50,gray90,bordeaux.png
+Caen,stade-malherbe-caen.svg,#3b4560,gray90,caen.png
+Cannes,AS_Cannes_foot_Logo_2009.svg,#f6f7f8,red,cannes.png
+Guingamp,en-avant-de-guingamp.svg,#d14a43,black,eag.png
+Le Havre,Havre_AC_2012.svg,#8CC5E6,#002E59,hac.png
+Lens,RC_Lens_2014.svg,#F5D406,#A91314,lens.png
+Lille,LOSC_Lille_2018.svg,#E1180B,#1F1B6A,lille.png
+Lorient,FC_Lorient_Bretagne-Sud.svg,#F58113,black,lorient.png
+Lyon,olympique-lyonnais.svg,#d49f45,black,ol.png
+Marseille,Olympique_Marseille_logo.svg,#2271b3,gray90,om.png
+Martigues,FC_Martigues.svg,#fcbc17,gray10,martigues.png
+Metz,FC-Metz.svg,#6B0508,gray90,metz.png
+Monaco,as-monaco-fc.svg,#d91920,gray90,monaco.png
+Montpellier,montpellier-hsc.svg,#ff6600,gray10,montpellier.png
+Nancy,AS_Nancy-Lorraine.svg,#ff0000,gray90,nancy.png
+Nantes,fc-nantes.svg,#ffd600,gray10,nantes.png
+Nice,ogc-nice.svg,#d14a43,gray10,nice.png
+Paris SG,paris-saint-germain-f-c.svg,#004170,gray90,psg.png
+Rennes,stade-rennais-f-c.svg,#e13327,gray10,rennes.png
+Sedan,Sedan_Ardennes_2001.svg,#009949,#EE161F,sedan.png
+Sochaux,FC_Sochaux-Montbéliard.svg,#FBD419,#202552,sochaux.png
+St Etienne,as-saint-étienne.svg,#006a32,gray90,asse.png
+Strasbourg,racing-club-de-strasbourg-alsace.svg,#004996,gray90,strasbourg.png
+Toulouse,Toulouse_FC_2018.svg,#755991,gray90,toulouse.png
+Troyes,ES_Troyes_AC.svg,#2c68aa,gray10,troyes.png
+Valenciennes,Logo_Valenciennes_FC.svg,#D91920,gray90,vafc.png
+Ajaccio,,yellow,gray10,fff.png
+Ajaccio GFCO,,yellow,gray10,fff.png
+Amiens,,yellow,gray10,amiens.png
+Arles,,yellow,gray10,fff.png
+Boulogne,,yellow,gray10,fff.png
+Brest,,yellow,gray10,brest.png
+Evian Thonon Gaillard,,yellow,gray10,fff.png
+Dijon,,yellow,gray10,fff.png
+Le Mans,,yellow,gray10,fff.png
+Grenoble,,yellow,gray10,fff.png
+Istres,,yellow,gray10,fff.png
+Gueugnon,,yellow,gray10,fff.png
+Chateauroux,,yellow,gray10,fff.png
+Reims,,yellow,gray10,reims.png
