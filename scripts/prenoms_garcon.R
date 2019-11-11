@@ -153,7 +153,7 @@ staticplot = ggplot(tops_format, aes(-rank, group = prenom,
 
 staticplot
 
-  anim = staticplot +transition_manual(frame) +
+  anim = staticplot +transition_manual(frame, cumulative=FALSE) +
     ease_aes('quadratic-in-out')+
     view_follow(fixed_x = TRUE)
  
