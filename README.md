@@ -31,6 +31,7 @@ sudo apt install ffmpeg
 * ggplot2
 * gifski
 * tidyverse
+* tweenr
 * janitor
 * png
 * RColorBrewer
