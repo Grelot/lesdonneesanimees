@@ -25,13 +25,13 @@ natcll=natcl[-c(which(natcl$preusuel == "_prenoms_rares")),]
 ###############################################################################
 ## prepare data
 # Côtes-d'Armor (22); Finistère (29); Ille-et-Vilaine (35); Morbihan (56) NANTES (44)
-breizh_dpt=c(22,29,56,35)
+martinique_dpt=c("972")
+martinique=natcll[which(natcll$dpt %in% martinique_dpt),]
 
-breizh=natcll[which(natcll$dpt %in% breizh_dpt),]
 
 
 #### order by birth day
-brOrd=breizh[order(breizh$annais),]
+brOrd=martinique[order(martinique$annais),]
 ## group by dpt
 femOrd <- brOrd %>%
   group_by(preusuel,annais) %>% 
@@ -113,7 +113,6 @@ for(k in 1:fillsize) {
 	tops=rbind(tops, currentTop)
 }
 
-
 tops$nombre=as.integer(tops$nombre)
 tops$nombre=as.numeric(tops$nombre)
 
@@ -131,13 +130,10 @@ tops_format
 
 
 
-
 ###############################################################################
 ## visualization
 nb.cols = 2
 mycolors <- c("#6ca0dc", "#d67a72") 
-
-
 
 
 
@@ -146,11 +142,11 @@ staticplot = ggplot(tops_format, aes(-rank, group = prenom,
   geom_tile(aes(y = nombre/2,height = nombre, width = 0.9), alpha = 0.8, color = NA) +
   geom_text(aes(y = nombre, label = paste(prenom, " ")),colour="gray10", hjust = 1,size=12) +
   geom_text(aes(y=nombre,label = Value_lbl, hjust=0), colour="gray10",size=12) +
-  geom_text(aes(x=-9,y=Inf,label = "Anvioù-bihan", hjust=0.5,vjust=0.5), colour="gray50",fontface="bold",size=24) +
-  geom_text(aes(x=-10,y=Inf,label = "a gaver e Breizh", hjust=0.5,vjust=0.5), colour="black",family="Ubuntu Light",fontface="bold",size=24) +
+  geom_text(aes(x=-7,y=Inf,label = "martinique", hjust=0.5,vjust=0.5), colour="gray50",fontface="bold",size=24) +
+  geom_text(aes(x=-8,y=Inf,label = "patois", hjust=0.5,vjust=0.5), colour="black",family="Ubuntu Light",fontface="bold",size=24) +
 
-  geom_text(aes(x=-13.75,y=Inf,label = year, hjust=0.5,vjust=0.5), colour="gray50",fontface="bold",size=60) +
-  geom_text(aes(x=-15.5,y=Inf,label ="Eus 1900 a 2018", hjust=0.5,vjust=0.5), colour="gray50",size=18) +
+  geom_text(aes(x=-11,y=Inf,label = year, hjust=0.5,vjust=0.5), colour="gray50",fontface="bold",size=72) +
+  geom_text(aes(x=-12.5,y=Inf,label ="Eus 1900 a 2018", hjust=0.5,vjust=0.5), colour="gray50",size=18) +
   
   coord_flip(clip = "off", expand = FALSE) +
   scale_x_continuous(labels = scales::comma,position="bottom") +
@@ -178,10 +174,10 @@ staticplot = ggplot(tops_format, aes(-rank, group = prenom,
 anim = staticplot +transition_manual(frame) +
     ease_aes('quadratic-in-out')+
     view_follow(fixed_x = TRUE)
+
+
  
 
 nombre_frames=as.integer(dim(tops_format)[1]/toplimit)
 animate(anim, nframes=nombre_frames, fps = 40,  width = 1920, height = 1080,renderer = ffmpeg_renderer()) -> for_mp4
-anim_save("animation_breizh.mp4", animation = for_mp4 )
-
-  
+anim_save("animation_martinique.mp4", animation = for_mp4 )
