@@ -33,29 +33,30 @@ names(carbone)=c("nation","year","fuel","solid","liquid","gas","cement","flaring
 carbone$fuel=carbone$fuel*1000
 
 
+first_year=min(carbone$year)
 
-myframe=40
-mykeptframe=1
-carbone_all= NULL
-for(pays in unique(carbone$nation)) {
-	current_p= carbone[which(carbone$nation ==pays),]
-	current_frame=0
-	for(y in 1:(length(unique(current_p$year))-1)) {	
-		current_p_y=current_p[c(y,y+1),]
-		interpol_curp=interpolate_df(current_p_y,mykeptframe,myframe,1)
-		interpol_curp$.frame=interpol_curp$.frame+current_frame
-		current_frame=current_frame+myframe+mykeptframe*2
-	}
-	carbone_all=rbind(carbone_all,interpol_curp)
+
+countries <- carbone %>%
+filter(year == 2014) %>%
+mutate(rank=rank(-fuel,ties.method="first")) %>%
+filter(rank <=40) %>% .$nation
+
+carbonec <- carbone %>% filter(nation %in% countries)
+
+
+
+carbo = NULL
+for(y in seq(1800,2014)) {
+  carboy <- carbonec %>% filter(year ==y) %>% select(nation, year, fuel)
+  for(co in countries) {
+    carboyco <- carboy %>% filter(nation ==co)
+    if(dim(carboyco)[1] == 0) {   
+      carboyco=data.frame(nation=co, year=y, fuel=0)
+    }
+    carbo = rbind(carbo,carboyco)
+  }
 }
 
-carbone_all$year=as.integer(carbone_all$year)
-
-carbone_all$fuel=as.integer(carbone_all$fuel)
-
-carbone_s=carbone_all
-
-carbone_all$nation = fct_explicit_na(carbone_all$nation, na_level = "(Missing)")
 
 
 
