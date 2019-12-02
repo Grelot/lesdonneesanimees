@@ -17,11 +17,10 @@ library(ggflags)
 ###############################################################################
 ## functions
 
-interpolate_df <- function(madf,kept_frames,fpy,nb_year) {
-   filled_df <- madf[1,] %>% 
-  keep_state(kept_frames) %>% 
-  tween_state(madf[2,], ease = 'cubic-in-out', nframes = fpy*nb_year)  %>% 
-  keep_state(kept_frames)
+interpolate_df <- function(madf,kept_frames,fpy,nb_year,current_frame) {
+  filled_df <- madf[1,] %>%   
+  tween_state(madf[2,], ease = 'cubic-in-out', nframes = fpy*nb_year)
+  filled_df$.frame=filled_df$.frame+current_frame
   return(filled_df)
 }
 
@@ -33,20 +32,18 @@ names(carbone)=c("nation","year","fuel","solid","liquid","gas","cement","flaring
 carbone$fuel=carbone$fuel*1000
 
 
-first_year=min(carbone$year)
-
 
 countries <- carbone %>%
 filter(year == 2014) %>%
 mutate(rank=rank(-fuel,ties.method="first")) %>%
-filter(rank <=40) %>% .$nation
+filter(rank <=30) %>% .$nation
 
 carbonec <- carbone %>% filter(nation %in% countries)
 
 
 
 carbo = NULL
-for(y in seq(1800,2014)) {
+for(y in seq(1830,2014)) {
   carboy <- carbonec %>% filter(year ==y) %>% select(nation, year, fuel)
   for(co in countries) {
     carboyco <- carboy %>% filter(nation ==co)
@@ -57,11 +54,41 @@ for(y in seq(1800,2014)) {
   }
 }
 
+nation_iso2=read.table("donnees/nation_co2_iso2.csv",header=T,sep=",")
+carbo=merge(carbo,nation_iso2,by="nation")
+
+#write.table(unique(carbo$nation),file="donnees/nation_co2_iso2.csv",row.names=F)
+
+carbone_all=NULL
+fpy=40
+kept_fram=1
+cur_fram=0
+
+#for(y in unique(carbo$year)[-(length(unique(carbo$year)))]) {
+
+for(y in seq(1830,2013)) {
+  current_y=carbo[which(carbo$year ==y | carbo$year ==(y+1)),]
+  carbo_p=NULL
+  for(pays in unique(carbo$nation)) {
+    current_p= current_y[which(current_y$nation ==pays),]
+    interpol_curp=interpolate_df(current_p,kept_fram,fpy,1,cur_fram)    
+    carbo_p=rbind(carbo_p,interpol_curp)
+  }
+  carbone_all=rbind(carbone_all,carbo_p)
+  print(y)
+  cur_fram=cur_fram+2*kept_fram+fpy
+}
 
 
+carbone_all$fuel=as.integer(carbone_all$fuel)
+
+carbone_all$year=as.integer(carbone_all$year)
 
 
-toplimit=12
+tops_format$iso2=as.character(tops_format$iso2)
+
+
+toplimit=15
 tops_format <- carbone_all %>%
   group_by(.frame) %>%
   mutate(rank = rank(-fuel,ties.method="first"),
@@ -71,22 +98,25 @@ tops_format <- carbone_all %>%
   filter(rank <=toplimit) %>%
   ungroup()
 
+tops_format$iso2=as.character(tops_format$iso2)
+
 ###############################################################################
 ## visualization
 nb.cols <- length(unique(tops_format$nation))
 africa_palette_color=c("#c35b48","#e5c027","#458962","#fa993e")
+
 mycolors <- sample(colorRampPalette(africa_palette_color)(nb.cols))
 
 
 
-staticplot = ggplot(tops_format, aes(-rank, group = nation,
+staticplot = ggplot(tops_format, aes(-rank, group = nation, country=iso2,
                                      fill = as.factor(nation), color = as.factor(nation))) +
   geom_tile(aes(y = fuel/2,height = fuel, width = 0.9), alpha = 0.8, color = NA) +
   geom_text(aes(y = fuel, label = paste(nation, "    ")),colour="gray10", hjust = 1,size=12) +
-  geom_text(aes(y=fuel,label = paste("   ",Value_lbl), hjust=0), colour="gray10",size=12) +
-  #geom_flag(aes(y=fuel),size=36)+
+  geom_text(aes(y=fuel,label = paste("   ",format(fuel,big.mark=",",scientific=FALSE)), hjust=0), colour="gray10",size=12) +
   geom_text(aes(x=-7,y=Inf,label = "rejet co2", hjust=0.5,vjust=0.5), colour="black",fontface="bold",size=24) +
   geom_text(aes(x=-8.5,y=Inf,label = "(en tonnes CO²)", hjust=0.5,vjust=0.5), colour="gray50",fontface="bold",size=18) +
+  geom_flag(aes(y=fuel),size=24)+
 
   geom_text(aes(x=-10,y=Inf,label = year, hjust=0.5,vjust=0.5), colour="gray50",fontface="bold",size=60) +
   
@@ -121,5 +151,7 @@ anim = staticplot +transition_manual(.frame) +
 
 
 nombre_frames=as.integer(dim(tops_format)[1]/toplimit)
-animate(anim, nframes=1000, fps = 40,  width = 1920, height = 1080,renderer = ffmpeg_renderer()) -> for_mp4
-anim_save("animation.mp4", animation = for_mp4 )
+animate(anim, nframes=nombre_frames, fps = 40,  width = 1920, height = 1080,renderer = ffmpeg_renderer()) -> for_mp4
+
+
+anim_save("animation_co2.mp4", animation = for_mp4 )
