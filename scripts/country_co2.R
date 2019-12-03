@@ -17,10 +17,12 @@ library(ggflags)
 ###############################################################################
 ## functions
 
-interpolate_df <- function(madf,kept_frames,fpy,nb_year,current_frame) {
-  filled_df <- madf[1,] %>%   
-  tween_state(madf[2,], ease = 'linear', nframes = fpy*nb_year)
-  filled_df$.frame=filled_df$.frame+current_frame
+interpolate_df <- function(madf,kept_frames,fpy,nb_year,current_year) {
+  filled_df <- madf[1,] %>% 
+    keep_state(kept_frames) %>% 
+    tween_state(madf[2,], ease = 'linear', nframes = fpy*nb_year)  %>% 
+    keep_state(kept_frames)
+  filled_df$.frame=filled_df$.frame+current_year*fpy*nb_year+2*kept_frames*current_year
   return(filled_df)
 }
 
@@ -60,17 +62,17 @@ carbo=merge(carbo,nation_iso2,by="nation")
 
 carbone_all=NULL
 fpy=40
-kept_fram=5
+kept_fram=1
 cur_fram=0
 
 #for(y in unique(carbo$year)[-(length(unique(carbo$year)))]) {
 
-for(y in seq(1848,2013)) {
-  current_y=carbo[which(carbo$year ==y | carbo$year ==(y+1)),]
+for(y in seq(2000,2013)) {
+  current_y=carbo[c(which(carbo$year ==y), which(carbo$year ==(y+1))),]
   carbo_p=NULL
   for(pays in unique(carbo$nation)) {
     current_p= current_y[which(current_y$nation ==pays),]
-    interpol_curp=interpolate_df(current_p,kept_fram,fpy,1,cur_fram)    
+    interpol_curp=interpolate_df(current_p,kept_fram,fpy,1,(y-1))   
     carbo_p=rbind(carbo_p,interpol_curp)
   }
   carbone_all=rbind(carbone_all,carbo_p)
@@ -84,8 +86,6 @@ carbone_all$fuel=as.integer(carbone_all$fuel)
 carbone_all$year=as.integer(carbone_all$year)
 
 
-tops_format$iso2=as.character(tops_format$iso2)
-
 
 toplimit=15
 tops_format <- carbone_all %>%
@@ -98,6 +98,9 @@ tops_format <- carbone_all %>%
   ungroup()
 
 tops_format$iso2=as.character(tops_format$iso2)
+
+tops_format=tops_format[which(tops_format$.phase == "transition"),]
+
 
 ###############################################################################
 ## visualization
@@ -151,7 +154,10 @@ anim = staticplot +transition_manual(.frame) +
 
 
 nombre_frames=as.integer(dim(tops_format)[1]/toplimit)
-animate(anim, nframes=nombre_frames, fps = 50,  width = 1920, height = 1080,renderer = ffmpeg_renderer()) -> for_mp4
+animate(anim, nframes=nombre_frames, fps = 40,  width = 1920, height = 1080,renderer = ffmpeg_renderer()) -> for_mp4
 
 
-anim_save("animation_co2.mp4", animation = for_mp4 )
+anim_save("tiny_animation_co2.mp4", animation = for_mp4 )
+
+
+anim_save("new_animation_co2.mp4", animation = for_mp4 )
