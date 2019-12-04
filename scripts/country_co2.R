@@ -1,3 +1,5 @@
+###############################################################################
+## data source
 #https://static1.squarespace.com/static/5ae60dae4611a0353c4f5e8e/t/5b28e4b203ce64bc17771674/1529406658936/20141209_EPI-RF+Report+on+Demand+Side+Initiatives+FINAL.compressed.pdf
 
 ###############################################################################
@@ -42,7 +44,7 @@ filter(rank <=30) %>% .$nation
 carbonec <- carbone %>% filter(nation %in% countries)
 
 
-
+## fill empty info
 carbo = NULL
 for(y in seq(1830,2014)) {
   carboy <- carbonec %>% filter(year ==y) %>% select(nation, year, fuel)
@@ -67,7 +69,7 @@ cur_fram=0
 
 #for(y in unique(carbo$year)[-(length(unique(carbo$year)))]) {
 
-for(y in seq(2000,2013)) {
+for(y in seq(1848,2013)) {
   current_y=carbo[c(which(carbo$year ==y), which(carbo$year ==(y+1))),]
   carbo_p=NULL
   for(pays in unique(carbo$nation)) {
@@ -144,7 +146,7 @@ staticplot = ggplot(tops_format, aes(-rank, group = nation, country=iso2,
         plot.subtitle=element_text(size=18, hjust=0.5, face="italic", color="grey50"),
         plot.caption =element_text(size=18, hjust=0.5, face="italic", color="grey50"),
         plot.background=element_blank(),
-        plot.margin = margin(2,10, 2, 4, "cm"))
+        plot.margin = margin(2,8, 2, 8, "cm"))
 
 
 anim = staticplot +transition_manual(.frame) +
