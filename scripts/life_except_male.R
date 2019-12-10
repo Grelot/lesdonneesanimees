@@ -18,6 +18,8 @@ library(ggflags)
 
 library(countrycode)
 
+
+
 ###############################################################################
 ## functions
 
@@ -33,13 +35,13 @@ interpolate_df <- function(madf,kept_frames,fpy,nb_year,current_year) {
 
 ###############################################################################
 ## load data
-female_life=read.csv("donnees/female_life/format.csv",header=T,sep=";")
+male_life=read.csv("donnees/male_life/format.csv",header=T,sep=";")
 
-female_life$iso3=tolower(countrycode(female_life$iso3, origin = 'iso3c', destination = 'iso2c'))
+male_life$iso3=tolower(countrycode(male_life$iso3, origin = 'iso3c', destination = 'iso2c'))
 
 
 
-fl <- female_life %>% gather(year, esperance, X1960:X2017) %>% arrange(country,year)
+fl <- male_life %>% gather(year, esperance, X1960:X2017) %>% arrange(country,year)
 fl$year= as.integer(str_replace(fl$year,'X',''))
 
 
@@ -80,7 +82,7 @@ toplimit=13
 tops_format <- flc_all %>%
   group_by(.frame) %>%
   mutate(rank = rank(-esperance,ties.method="first"),
-  	pos=esperance-72) %>%
+  	pos=esperance-65) %>%
   group_by(country) %>% 
   filter(rank <=toplimit) %>%
   ungroup()
@@ -94,9 +96,11 @@ tops_format=tops_format[which(tops_format$.phase == "transition"),]
 nb.cols <- length(unique(tops_format$country))
 africa_palette_color=c("#c35b48","#e5c027","#458962","#fa993e")
 flag_palette_color=c("#005da4","#ed1c24","#ffdd00")
-baby_girl_palette_color=c("#ff69b4","#fcfdcd","#d6fbe4","#d1d1f9","#cff1fb","#ffdbdb","#FE4365","#F9CDAD","#C8C8A9","#957DAD","#E0BBE4","#F47C7C","#F7F48B","#A1DE93","#70A1D7")
+baby_boy_palette_color=c("#cccccc","#e1330e","#ffa500","#30d0f2","#ffca2b","#6ca0dc","#935f23","#00ffcd","#9b7653","#34b334")
 
-mycolors <- sample(colorRampPalette(baby_girl_palette_color)(nb.cols))
+
+
+mycolors <- sample(colorRampPalette(baby_boy_palette_color)(nb.cols))
 
 
 
@@ -106,10 +110,9 @@ staticplot = ggplot(tops_format, aes(-rank, group = country, country=iso3,
   geom_text(aes(y = pos, label = paste(country, "   ")),colour="gray10", hjust = 1,size=12) +
   geom_text(aes(y=pos,label = paste("  ",round(esperance,digits=2)), hjust=0), colour="gray10",size=12) +
   geom_text(aes(x=-10,y=Inf,label = "Esperance de vie", hjust=0.5,vjust=0.5), colour="gray50",fontface="bold",size=24) +
-  geom_text(aes(x=-11,y=Inf,label = "pour les femmes", hjust=0.5,vjust=0.5), colour="#ff1493",fontface="bold",size=18) +
+  geom_text(aes(x=-11,y=Inf,label = "pour les hommes", hjust=0.5,vjust=0.5), colour="#6ca0dc",fontface="bold",size=18) +
   geom_flag(aes(y=pos),size=24)+
   geom_text(aes(x=-12.5,y=Inf,label = year, hjust=0.5,vjust=0.5), colour="gray50",fontface="bold",size=60) +
-
   coord_flip(clip = "off", expand = FALSE) +
   scale_x_continuous(labels = scales::comma,position="bottom") +
   scale_fill_manual(values=mycolors) +
@@ -140,8 +143,8 @@ anim = staticplot +transition_manual(.frame) +
     view_follow(fixed_x = TRUE)
  
 
-
 nombre_frames=as.integer(dim(tops_format)[1]/toplimit)
 animate(anim, nframes=nombre_frames, fps = 40,  width = 1920, height = 1080,renderer = ffmpeg_renderer()) -> for_mp4
 
-anim_save("life_esperance_femme.mp4", animation = for_mp4 )
+
+anim_save("new_life_esperance_homme.mp4", animation = for_mp4 )
